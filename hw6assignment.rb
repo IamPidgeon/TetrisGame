@@ -5,25 +5,11 @@
 
 
 class MyPiece < Piece
-	All_My_Pieces = [rotations(Piece::All_Pieces[0][0].push [2, 0]),
-									 rotations([[0, 0], [1, 0], [0, 1]]), #small l 
-									[Piece::All_Pieces[2][0].push([-2, 0]),
-									 Piece::All_Pieces[2][1].push([0, -2])]].concat [[[[0, 0], [1, 0], [0, 1], [1, 1]]],  # square (only needs one)
-									rotations([[0, 0], [-1, 0], [1, 0], [0, -1]]), # T
-									[[[0, 0], [-1, 0], [1, 0], [2, 0]], # long (only needs two)
-									[[0, 0], [0, -1], [0, 1], [0, 2]]],
-									rotations([[0, 0], [0, -1], [0, 1], [1, 1]]), # L
-									rotations([[0, 0], [0, -1], [0, 1], [-1, 1]]), # inverted L
-									rotations([[0, 0], [-1, 0], [0, -1], [1, -1]]), # S
-									rotations([[0, 0], [1, 0], [0, -1], [-1, -1]])] 
-
-	def initialize (point_array, board)
-		super
-	end
-	
-	def piece_size
-		current_rotation.size
-	end
+	All_My_Pieces = Piece::All_Pieces.concat([
+  							 rotations([[0, 0], [1, 0], [0, 1], [1, 1], [-1, 0]]), # P
+								 [[[-1, 0], [-2, 0], [0, 0], [1, 0], [2, 0]], # longer long
+								 [[0, -1], [0, -2], [0, 0], [0, 1], [0, 2]]],
+								 rotations([[0, 0], [0, 1], [1, 0]])]) # small l
 
 	def self.next_piece (board, cheat)
 		MyPiece.new((cheat > 0 ? [[[0,0]]] : All_My_Pieces.sample), board)
@@ -47,7 +33,7 @@ class MyBoard < Board
 	end
 	
 	def add_cheat
-		if !game_over? and @game.is_running? and score >= 100
+		if !game_over? and @game.is_running? and score >= 100 and @cheat == 0
 			@score -= 100
 			@game.update_score
 			@cheat += 1
@@ -58,7 +44,7 @@ class MyBoard < Board
 	def store_current
 		locations = @current_block.current_rotation
 		displacement = @current_block.position
-		(0..(@current_block.piece_size - 1)).each{|index| 
+		(0..(locations.size - 1)).each{|index| 
 			current = locations[index];
 			@grid[current[1]+displacement[1]][current[0]+displacement[0]] = 
 			@current_pos[index]
@@ -70,12 +56,8 @@ class MyBoard < Board
 end
 
 class MyTetris < Tetris
-	def initialize
-		super
-	end
 	
 	def set_board
-		super
 		@canvas = TetrisCanvas.new
 		@board = MyBoard.new(self)
 		@canvas.place(@board.block_size * @board.num_rows + 3,
