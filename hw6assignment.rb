@@ -26,11 +26,7 @@ class MyPiece < Piece
 	end
 
 	def self.next_piece (board, cheat)
-		if cheat.any?
-			 MyPiece.new([[[0, 0]]], board)
-		else 
-			 MyPiece.new(All_My_Pieces.sample, board)
-		end
+		MyPiece.new((cheat > 0 ? [[[0,0]]] : All_My_Pieces.sample), board)
 	end			
 																				
 end
@@ -40,13 +36,13 @@ class MyBoard < Board
 	
 	def initialize (game)
 		super
-		@cheat = []
+		@cheat = 0
 		@current_block = MyPiece.next_piece(self, @cheat)
 	end
 	
 	def next_piece
 		@current_block = MyPiece.next_piece(self, @cheat)
-		@cheat.pop
+		@cheat -= 1 if @cheat > 0
 		@current_pos = nil
 	end
 	
@@ -54,7 +50,7 @@ class MyBoard < Board
 		if !game_over? and @game.is_running? and score >= 100
 			@score -= 100
 			@game.update_score
-			@cheat.push true
+			@cheat += 1
 			draw
 		end
 	end
