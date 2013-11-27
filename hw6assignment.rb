@@ -24,21 +24,39 @@ class MyPiece < Piece
 	def piece_size
 		current_rotation.size
 	end
-		
-	def self.next_piece (board)
-		MyPiece.new(All_My_Pieces.sample, board)
-	end																			
+
+	def self.next_piece (board, cheat)
+		if cheat.any?
+			 MyPiece.new([[[0, 0]]], board)
+		else 
+			 MyPiece.new(All_My_Pieces.sample, board)
+		end
+	end			
+																				
 end
 
 class MyBoard < Board
+	attr_accessor :cheat
+	
 	def initialize (game)
 		super
-		@current_block = MyPiece.next_piece(self)
+		@cheat = []
+		@current_block = MyPiece.next_piece(self, @cheat)
 	end
 	
 	def next_piece
-		@current_block = MyPiece.next_piece(self)
+		@current_block = MyPiece.next_piece(self, @cheat)
+		@cheat.pop
 		@current_pos = nil
+	end
+	
+	def add_cheat
+		if !game_over? and @game.is_running? and score >= 100
+			@score -= 100
+			@game.update_score
+			@cheat.push true
+			draw
+		end
 	end
 	
 	def store_current
@@ -72,8 +90,7 @@ class MyTetris < Tetris
 	def key_bindings
 		super
 		@root.bind('u', proc {@board.rotate_clockwise; @board.rotate_clockwise})
-		@root.bind('u', proc {@board.rotate_clockwise; @board.rotate_clockwise})
-
+		@root.bind('c', proc {@board.add_cheat})
 	end
 	
 end
