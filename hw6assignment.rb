@@ -4,17 +4,19 @@
 # part of your solution.
 
 
-#bugs
-#1. square shape does not rotate if it comes out facing right
-#2. sometimes the lines do not flush when special pieces are involved
-#- maybe I have to copy all the functions that use next_piece
-#- maybe copy-pasting in MyBoard.init will help
 class MyPiece < Piece
-	All_My_Pieces = [rotations(Piece::All_Pieces[0][0].push [2, 0]),		# P
+	All_My_Pieces = [rotations(Piece::All_Pieces[0][0].push [2, 0]),
 									 rotations([[0, 0], [1, 0], [0, 1]]), #small l 
-									 [Piece::All_Pieces[2][0].push([-2, 0]),
-									  Piece::All_Pieces[2][1].push([0, -2])]].concat Piece::All_Pieces	# longer long
-	
+									[Piece::All_Pieces[2][0].push([-2, 0]),
+									 Piece::All_Pieces[2][1].push([0, -2])]].concat [[[[0, 0], [1, 0], [0, 1], [1, 1]]],  # square (only needs one)
+									rotations([[0, 0], [-1, 0], [1, 0], [0, -1]]), # T
+									[[[0, 0], [-1, 0], [1, 0], [2, 0]], # long (only needs two)
+									[[0, 0], [0, -1], [0, 1], [0, 2]]],
+									rotations([[0, 0], [0, -1], [0, 1], [1, 1]]), # L
+									rotations([[0, 0], [0, -1], [0, 1], [-1, 1]]), # inverted L
+									rotations([[0, 0], [-1, 0], [0, -1], [1, -1]]), # S
+									rotations([[0, 0], [1, 0], [0, -1], [-1, -1]])] 
+
 	def initialize (point_array, board)
 		super
 	end
@@ -70,6 +72,8 @@ class MyTetris < Tetris
 	def key_bindings
 		super
 		@root.bind('u', proc {@board.rotate_clockwise; @board.rotate_clockwise})
+		@root.bind('u', proc {@board.rotate_clockwise; @board.rotate_clockwise})
+
 	end
 	
 end

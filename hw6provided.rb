@@ -1,16 +1,12 @@
 # University of Washington, Programming Languages, Homework 6, hw6provided.rb
 
-#how does game_over? method work
-#why is next_piece called differently in @current_block = Piece.next_piece(self) and Block.run ?
 require_relative './hw6graphics'
 
 # class responsible for the pieces and their movements
 class Piece 
-  
   # creates a new Piece from the given point array, holding the board for 
   # determining if movement is possible for the piece, and gives the piece a 
   # color, rotation, and starting position.
-  # not clearing rows with the 5 piece
   def initialize (point_array, board)
     @all_rotations = point_array
     @rotation_index = (0..(@all_rotations.size-1)).to_a.sample
