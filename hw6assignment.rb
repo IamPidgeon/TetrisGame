@@ -12,7 +12,7 @@ class MyPiece < Piece
 								 rotations([[0, 0], [0, 1], [1, 0]])]) # small l
 
 	def self.next_piece (board, cheat)
-		MyPiece.new((cheat > 0 ? [[[0,0]]] : All_My_Pieces.sample), board)
+		MyPiece.new((cheat == true ? [[[0,0]]] : All_My_Pieces.sample), board)
 	end			
 																				
 end
@@ -22,21 +22,20 @@ class MyBoard < Board
 	
 	def initialize (game)
 		super
-		@cheat = 0
 		@current_block = MyPiece.next_piece(self, @cheat)
 	end
 	
 	def next_piece
 		@current_block = MyPiece.next_piece(self, @cheat)
-		@cheat -= 1 if @cheat > 0
+		@cheat = false
 		@current_pos = nil
 	end
 	
 	def add_cheat
-		if !game_over? and @game.is_running? and score >= 100 and @cheat == 0
+		if !game_over? and @game.is_running? and score >= 100 and !@cheat
 			@score -= 100
 			@game.update_score
-			@cheat += 1
+			@cheat = true
 			draw
 		end
 	end
