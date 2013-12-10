@@ -5,7 +5,7 @@
 
 
 class MyPiece < Piece
-	All_My_Pieces = Piece::All_Pieces.concat([
+	All_My_Pieces = All_Pieces.concat([
   							 rotations([[0, 0], [1, 0], [0, 1], [1, 1], [-1, 0]]), # P
 								 [[[-1, 0], [-2, 0], [0, 0], [1, 0], [2, 0]], # longer long
 								 [[0, -1], [0, -2], [0, 0], [0, 1], [0, 2]]],
@@ -43,7 +43,7 @@ class MyBoard < Board
 	def store_current
 		locations = @current_block.current_rotation
 		displacement = @current_block.position
-		(0..(locations.size - 1)).each{|index| 
+		(locations.each_index).each{|index| 
 			current = locations[index];
 			@grid[current[1]+displacement[1]][current[0]+displacement[0]] = 
 			@current_pos[index]
